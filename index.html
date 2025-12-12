@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>定食屋メニューランダマイザ</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, #f7f9fc 0, #e8edf5 40%, #dde5f5 80%);
+    }
+    main {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 14px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+      padding: 28px 32px;
+      width: min(520px, 92vw);
+      backdrop-filter: blur(6px);
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(20px, 3vw, 26px);
+      text-align: center;
+    }
+    #result {
+      margin: 14px 0 18px;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f9fafc, #eef4ff);
+      border: 1px solid #d8e2ff;
+      text-align: center;
+      font-size: 20px;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4f8bff, #6fc6ff);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 90ms ease, box-shadow 120ms ease, opacity 120ms ease;
+      box-shadow: 0 12px 24px rgba(79, 139, 255, 0.24);
+    }
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 16px rgba(79, 139, 255, 0.2);
+      opacity: 0.96;
+    }
+    footer {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #4d5562;
+      text-align: center;
+    }
+    code {
+      background: #f1f5f9;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>今日の定食をえらぶ</h1>
+    <div id="result">まだ決まっていません</div>
+    <button id="pickButton">ランダムに決める</button>
+    <footer>
+      メニューは <code>menuItems</code> 配列を編集して設定してください。
+    </footer>
+  </main>
+
+  <script>
+    // ここに好きな定食メニューを並べてください。
+    const menuItems = [
+      "しょうが焼き定食",
+      "唐揚げ定食",
+      "焼き魚定食（サバ）",
+      "ハンバーグ定食",
+      "チキン南蛮定食",
+      "野菜炒め定食",
+      "サバ味噌煮定食",
+      "豚キムチ定食",
+      "親子丼セット",
+      "カツ丼セット"
+    ];
+
+    const resultEl = document.getElementById("result");
+    const buttonEl = document.getElementById("pickButton");
+    let spinning = false;
+
+    function pickRandomMenu() {
+      if (!menuItems.length) {
+        resultEl.textContent = "メニューが設定されていません";
+        return;
+      }
+      if (spinning) return;
+
+      spinning = true;
+      buttonEl.disabled = true;
+      buttonEl.textContent = "抽選中...";
+
+      const spinDuration = 1600;
+      const tick = 80;
+      const spinTimer = setInterval(() => {
+        const index = Math.floor(Math.random() * menuItems.length);
+        resultEl.textContent = menuItems[index];
+      }, tick);
+
+      setTimeout(() => {
+        clearInterval(spinTimer);
+        const finalIndex = Math.floor(Math.random() * menuItems.length);
+        resultEl.textContent = menuItems[finalIndex];
+        buttonEl.disabled = false;
+        buttonEl.textContent = "ランダムに決める";
+        spinning = false;
+      }, spinDuration);
+    }
+
+    buttonEl.addEventListener("click", pickRandomMenu);
+  </script>
+</body>
+</html>
+
